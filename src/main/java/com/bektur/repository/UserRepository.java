@@ -6,5 +6,5 @@ import com.bektur.model.User;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
-
+    User getId();
 }

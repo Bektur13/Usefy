@@ -32,7 +32,7 @@ public class UserSeviceImpl implements UserService {
 
     @Override
     public User findByUserName(String username) {
-        return userRepository.getId();
+        return userRepository.findById(username);
     }
 
 }

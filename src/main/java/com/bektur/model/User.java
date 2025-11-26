@@ -16,4 +16,25 @@ public class User {
 
     @Column(nullable = false)
     private String passwordHash;
+
+    public User(String username, String passwordHash) {
+        this.username = username;
+        this.passwordHash = passwordHash;
+    }
+
+    public String getUsername() {
+        return this.username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPasswordHash() {
+        return this.passwordHash;
+    }
+
+    public String getPassword() {
+        return this.passwordHash;
+    }
 }

@@ -1,5 +1,7 @@
 package com.bektur.controller;
 
+import com.bektur.dto.LoginRequestDTO;
+import com.bektur.dto.UserRegistrationDTO;
 import com.bektur.model.User;
 import com.bektur.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,40 +30,26 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> registerUser(@RequestBody User userData) {
-        try {
-            User registeredUser = userService.registerUser((userData));
-
-            return new ResponseEntity<>(registeredUser,HttpStatus.CREATED);
-        } catch(Exception e) {
-            String errorMessage = "User can't be registered";
-            return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
-        }
+    public ResponseEntity<?> registerUser(@RequestBody User dto) {
+        User newUser = userService.registerUser(dto);
+        return ResponseEntity.status(201).body("User registered successfully")
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody Map<String, String> credentials) {
-        String username = credentials.get("username");
-        String password = credentials.get("password");
+    public ResponseEntity<?> login(@RequestBody LoginRequestDTO dto) {
 
-        if(username == null || password == null) {
-            return new ResponseEntity<>("Username and password are required.", HttpStatus.BAD_REQUEST);
+        User user = userService.findByUserName(dto.getUsername());
+
+        if(user == null ) {
+            return ResponseEntity.status(401).body("Invalid username");
         }
 
-        User user = userService.findByUserName(username);
-
-        if(user == null) {
-            return new ResponseEntity<>("Invalid credentials.", HttpStatus.UNAUTHORIZED);
+        if(!passwordEncoder.matches(dto.getPassword(), user.getPasswordHash())) {
+            return ResponseEntity.status(401).body("Invalid password");
         }
 
-        if(passwordEncoder.matches(password, user.getPasswordHash())) {
-            Map<String, String> response = new HashMap<>();
-            response.put("message", "Login successful.");
-            response.put("username", user.getUsername());
-            return new ResponseEntity<>(response, HttpStatus.OK);
-        }else {
-            return new ResponseEntity<>("Invalid credentials: ", HttpStatus.UNAUTHORIZED);
-        }
+        return ResponseEntity.ok("Login successful!");
+
     }
 
 }

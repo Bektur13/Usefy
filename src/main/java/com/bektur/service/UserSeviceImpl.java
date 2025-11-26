@@ -1,8 +1,10 @@
 package com.bektur.service;
 
 
+import com.bektur.dto.UserRegistrationDTO;
 import com.bektur.model.User;
 import com.bektur.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -13,26 +15,24 @@ public class UserSeviceImpl implements UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public UserSeviceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
-        this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
-    }
+    @Autowired
+    public User registerUser(UserRegistrationDTO userData) {
+        if(userRepository.findByUserName(userData.getUserName()) != null) {
+            throw new RuntimeException("Username already exists");
+        }
 
-    @Override
-    public User registerUser(User userData) {
+        String hashedPassword = passwordEncoder.encode(userData.getPassword());
 
-        String hashedPassword = passwordEncoder.encode(userData.getPasswordHash());
-
-        User newUser = new User();
+        User newUser = new User(userRepository.findByUserName(userData.getUsername()));
         newUser.setUsername(userData.getUsername());
         newUser.setPasswordHash(hashedPassword);
-        return userRepository.save(newUser);
 
+        return userRepository.save(newUser);
     }
 
     @Override
-    public User findByUserName(String username) {
-        return userRepository.findById(username);
+    public User findByUsername(String username) {
+        return userRepository.findByUserName((username));
     }
 
 }

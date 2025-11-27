@@ -31,10 +31,10 @@ class UserServiceImplTest {
     }
 
     @Test
-    void registerUser_ShouldSaveUser_WhenNewUsername() {
+    void testRegisterUser_Success() {
         UserRegistrationDTO dto = new UserRegistrationDTO("Bektur", "pass123");
 
-        when(userRepository.findByUserName("Bektur")).thenReturn(false);
+        when(userRepository.findByUserName("Bektur")).thenReturn(null);
         when(passwordEncoder.encode("pass123")).thenReturn("hashed123");
 
         User savedUser = new User("Bektur", "hashed123");
@@ -47,11 +47,31 @@ class UserServiceImplTest {
     }
 
     @Test
-    void registerUser_ShouldThrowException_WhenUsernameExists() {
+    void testRegisterUser_UsernameAlreadyExists() {
         UserRegistrationDTO dto = new UserRegistrationDTO("Bektur", "pass123");
-        when(userRepository.findByUserName("bektur")).thenReturn(true);
+        when(userRepository.findByUserName("Bektur")).thenReturn(new User());
 
         assertThrows(IllegalArgumentException.class, () -> userService.registerUser(dto));
+    }
+
+    @Test
+    void testFindByUsername() {
+        User user = new User("Bektur", "");
+
+        when(userRepository.findByUserName("Bektur")).thenReturn(user);
+
+        User result = userService.findByUsername("Bektur");
+
+        assertEquals("Bektur", result.getUsername());
+    }
+
+    @Test
+    void testFindByUsername_NotFound() {
+        when(userRepository.findByUserName("unknown")).thenReturn(null);
+
+        User result = userService.findByUsername("unknown");
+
+        assertNull(result);
     }
 
 }

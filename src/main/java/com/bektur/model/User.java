@@ -2,39 +2,49 @@ package com.bektur.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Data
 @Entity
+@Table(name = "users")
+@Getter
+@Setter @NoArgsConstructor
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(nullable = false, unique = true)
+    @Column(unique = true, nullable = false)
     private String username;
 
-    @Column(nullable = false)
-    private String passwordHash;
+    @Column
+    private String password;
 
-    public User(String username, String passwordHash) {
+    public User(String username, String password) {
         this.username = username;
-        this.passwordHash = passwordHash;
+        this.password = password;
+    }
+
+    public Long getId() {
+        return id;
+    }
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getUsername() {
-        return this.username;
+        return username;
     }
-
     public void setUsername(String username) {
         this.username = username;
     }
 
-    public String getPasswordHash() {
-        return this.passwordHash;
-    }
-
     public String getPassword() {
-        return this.passwordHash;
+        return password;
+    }
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

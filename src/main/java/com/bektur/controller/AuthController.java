@@ -4,13 +4,12 @@ import com.bektur.dto.LoginRequestDTO;
 import com.bektur.dto.UserRegistrationDTO;
 import com.bektur.model.User;
 import com.bektur.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
 
 
 @RestController
@@ -25,8 +24,13 @@ public class AuthController {
         this.passwordEncoder = passwordEncoder;
     }
 
-    @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody UserRegistrationDTO dto) {
+    @PostMapping( value = "/register")
+    public ResponseEntity<?> register(@Valid @ModelAttribute UserRegistrationDTO dto, BindingResult bindingResult) {
+
+        if(bindingResult.hasErrors()) {
+            return ResponseEntity.badRequest().body(bindingResult.getAllErrors());
+        }
+
         userService.registerUser((dto));
         return ResponseEntity.status(201).body("User registered successfully!");
     }

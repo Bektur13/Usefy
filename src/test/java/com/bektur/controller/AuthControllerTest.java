@@ -90,5 +90,10 @@ public class AuthControllerTest {
 
     }
 
+    @Test
+    void bad_Request() throws  Exception {
+
+    }
+
 
 }

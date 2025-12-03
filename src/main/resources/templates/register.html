@@ -17,7 +17,17 @@
     <br/>
 
     <button type="submit">Register</button>
+
+    <div th:if="${#fields.hasErrors('*')}">
+        <ul>
+            <li th:each="err : ${#fields.errors('*')}}" th:text="${err}"></li>
+        </ul>
+    </div>
 </form>
 
+<script>
+    function validateForm() {
+    }
+</script>
 </body>
 </html>

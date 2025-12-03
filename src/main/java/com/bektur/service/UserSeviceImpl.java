@@ -27,7 +27,7 @@ public class UserSeviceImpl implements UserService {
             throw new RuntimeException("Username already taken");
         }
 
-        User user = new User();
+        User user = new User("", "");
         user.setUsername(dto.getUsername());
 
         String hashed = passwordEncoder.encode(dto.getPassword());

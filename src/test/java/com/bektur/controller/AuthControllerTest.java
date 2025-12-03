@@ -35,7 +35,7 @@ public class AuthControllerTest {
     @Mock
     private AuthController authController;
 
-    private ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
 
     @BeforeEach
@@ -84,7 +84,7 @@ public class AuthControllerTest {
         when(userService.findByUsername("Bektur")).thenReturn(user);
         when(passwordEncoder.matches("pass", "hashed")).thenReturn(false);
 
-        LoginRequestDTO dto = new LoginRequestDTO("Bektur", "pass");
+        LoginRequestDTO dto = new LoginRequestDTO("Bektur", "hashed");
 
         mockMvc.perform(post("/api/auth/login").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(dto))).andExpect(status().isUnauthorized());
 
